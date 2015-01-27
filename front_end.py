@@ -4,6 +4,8 @@
 # vytvory front_end a posktuje funkcie pre
 # posielanie a ziskavanie dat z neho
 
+import sys
+
 def get_front_end():
 	return dialog()
 
@@ -25,6 +27,9 @@ class dialog(front_end):
 
 	def get(self, msg):
 		return raw_input(msg)
+
+	def flush(self):
+		sys.stdout.flush()
 
 
 #TODO zvysne front_endy

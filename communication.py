@@ -3,8 +3,11 @@
 
 # Tento subor ma na starosti komunikaciu s front sendom
 
-from formating import get_questions
+from formating import get_from_file
+import pickle
 
+
+DIVIDER = ':'
 
 class communicator():
 	def __init__(self, end, file_path):
@@ -13,7 +16,7 @@ class communicator():
 		#front_end
 		self.end = end
 		# otazky vo forme ID:otazky
-		self.questions = get_questions(file_path)
+		self.questions = get_from_file(file_path)
 		# odpovede vo forme ID:odpoved
 		self.answers   = {}
 
@@ -27,10 +30,12 @@ class communicator():
 		for msg in self.buffer:
 			self.end.send(msg)
 			self.buffer = self.buffer[1:]
+			self.end.flush()
 
 	# varuje uzivatela (preskoci frontu hlasok)
 	def warn(self, msg):
 		self.end.send(msg)
+		self.end.flush()
 
 	# ziska odpoved z otazky
 	def get_answer(self, ID):
@@ -41,9 +46,26 @@ class communicator():
 		#TODO neupdatovat ak uz je v zodpovedanych za ??podmienok??
 		# napriklad uz bola zodpovedana, to sa moze lisit, zodpovedana
 		# v behu tohto programu alebo pri predchadzajucej instalacii
-		q = self.questions[ID]
-		answer = self.end.get(q.QUESTION + "\n")
-		self.answers.update({ID:answer})
+
+		#najde otazku ktorej odpoved chceme
+		q = self.questions[ID]	
+		while True:
+			try:
+				text_answer = self.end.get( q.ask() + q.give_options() )
+				answer = q.answer_parser(text_answer)
+				self.answers.update({ID:answer})
+				break
+			except RuntimeError:
+				self.warn("Wrong input, try again")
+
+	#nacita odpovede zo suboru
+	def load(self,file_path):
+		ans = pickle.load ( open ( file_path, "rb" ) )
+		self.answers.update ( ans )
+		
+	#ulozi odpovede
+	def save(self,file_path):
+		pickle.dump( self.answers, open( file_path, "wb" ) )
 	
 
 	def stop(self):

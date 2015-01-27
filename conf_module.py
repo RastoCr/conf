@@ -7,18 +7,21 @@
 from communication import communicator
 from front_end     import get_front_end
 
-def conf_start(file_path):
-	return conf_module(file_path)
+def conf_start():
+	return conf_module()
 
 class conf_module:
-	def __init__(self, file_path):
-		self.file_path = file_path
+	def __init__(self):
+		self.priority = 1
 		
-
-	def make_front_end(self):
+	def make_front_end(self, file_path):
 		end = get_front_end()
 		# cesta k suboru z otazkami
-		self.comm = communicator(end, self.file_path)		
+		self.comm = communicator(end, file_path)
+		try:
+			self.comm.load("save.p")
+		except:
+			pass		
 
 	def ask_question(self, ID):
 		self.comm.ask_question ( ID )
@@ -38,6 +41,7 @@ class conf_module:
 
 	
 	def stop(self):
+		self.comm.save("save.p") 
 		# TODO exportacia novych odpovedi
 		self.comm.stop()
 
