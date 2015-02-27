@@ -2,83 +2,63 @@
 # encoding=utf-8
 
 # spravuje formatovanie vstupnych suborov
-# otazok ktore su spravovavane, poskytuje 
+# otazok a typov ktore su spravovavane, poskytuje
 # funkcie pre zobrazenia a ziskavanie tychto formatov
 
-class question:
-	def __init__(self, TYPE, DEFAULT, PRIORITY, DESC, LDESC):
-		self.TYPE     = TYPE
-		self.DEFAULT  = DEFAULT
-		self.PRIORITY = PRIORITY
-		self.DESC    = DESC
-		self.LDESC    = LDESC
-
-	def printable(self):
-		return "Type:{}\nDefault:{}\nPriority:{}\nDescription:{}\nLong description:{}".format(self.TYPE, self.DEFAULT, self.PRIORITY, self.DESC, self.LDESC)
-	
-	def ask(self):
-		return self.DESC + "\n"
-
-	#TODO rozne typy otazok
-	def give_options(self):
-		return ""
-
-	#TODO zvysne typy
-	def answer_parser(self, answer):
-		if (self.TYPE.lower() == "boolean"):
-			answer = answer.lower()
-			if (answer == 'y' or answer == "yes" or answer == "true"):
-				return True
-			if (answer == 'n' or answer == "no" or answer == "false"):
-				return  False
-			raise RuntimeError("Wrong input")
-			
+from formating_templates import get_string, get_boolean, get_select,get_multiselect,get_note,get_text,get_password
 
 
+# zacne nacitavanie zo suboru
 def get_from_file(name_of_file):
 	try:
 		f = open(name_of_file,'r')
-		l = get_questions(f)	
+		l = get_templates(f)	
 		f.close()
 		return l
 	except NameError:
 		print "Wrong file name\n"
 		return {}
 
-def get_questions(FILE):
+
+# nacitava otazku z file descriptoru
+def get_templates(FILE):
 	result = {}
 	line = FILE.readline()
+	# ignoruj prazdne riadky
 	while line != "":
+		# zaciatok vzoru
 		if line[0] == '<':
+			# meno vzoru
 			caption = line[1:][:-2]
-			result.update( {caption:get_question(FILE)} )
+			# nacitanie vzoru
+			result.update( {caption:get_template(FILE)} )
 		line = FILE.readline()	
 	return result
 
-#TODO nech to necykli ked niekto spravi zly format.
-def get_question(FILE):
-	a = FILE.readline()
-	TYPE = a.split(":")[1][:-1]
-	a = FILE.readline()
-	DEFAULT = a.split(":")[1][:-1]
-	a = FILE.readline()
-	PRIORITY = a.split(":")[1][:-1]
-	
-	a = FILE.readline()	
-	DESC = a.split(":")[1]
-	while True:
+def get_template(FILE):
+	try:
+		# type
 		a = FILE.readline()	
-		if (a.split(":")[0] == "Long description"):
-			break
-		DESC = DESC + a
-	DESC = DESC[:-1]
+		TYPE = a.split(":")[1][:-1]
+	except IndexError:
+		raise RuntimeError("Wrong format of the template file:\n{}\n".format(FILE) )	
+		# ak riadok nejde rozdelit je chyba vo formate
 
-	LDESC = a.split(":")[1]
-	while True:	
-		a = FILE.readline()	
-		if (a == "</>\n"):
-			break
-		LDESC = LDESC + a
-	LDESC = LDESC[:-1]
-	return question(TYPE,DEFAULT,PRIORITY,DESC,LDESC)
+	TYPE = TYPE.lower()
+	if (TYPE == "string"):
+		return get_string(FILE)
+	if (TYPE == "boolean"):
+		return get_boolean(FILE)
+	if (TYPE == "select"):
+		return get_select(FILE)
+	if (TYPE == "multiselect"):
+		return get_multiselect(FILE)
+	if (TYPE == "note"):
+		return get_note(FILE)
+	if (TYPE == "text"):
+		return get_text(FILE)
+	if (TYPE == "password"):
+		return get_password(FILE)
+	raise RuntimeError("Wrong format of the template file:\n{}\n".format(FILE) + "Was expecting type of a template, got: `{}`".format(TYPE) )
+
 

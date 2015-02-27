@@ -5,31 +5,14 @@
 # posielanie a ziskavanie dat z neho
 
 import sys
+from front_end_selector import select
+from dialog		import dialog
+
 
 def get_front_end():
-	return dialog()
-
-#virtualna trieda
-class front_end:
-	def __init__(self):
-		pass
-	def send(self,msg):
-		pass
-	def get(self, msg):
-		pass
-
-class dialog(front_end):
-	def __init__(self):
-		front_end.__init__(self)
-
-	def send(self, msg):
-		print msg
-
-	def get(self, msg):
-		return raw_input(msg)
-
-	def flush(self):
-		sys.stdout.flush()
+	end = select()
+	if (end == "dialog"):
+		return dialog()
 
 
 #TODO zvysne front_endy

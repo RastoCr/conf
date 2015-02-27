@@ -1,0 +1,59 @@
+<t_bool>
+Type:boolean
+Default:true
+Priority:3
+Description:Do you like bananas?
+Long description:Bananas are so cool i dont even know how to describe them.
+But you, do you like them? Can you feel how sweet are they? How delicious?
+Answer before bananas come for you!
+</>
+
+<t_select>
+Type:select
+Choices:yes/ no/ maybe/ it is classified
+Default:true
+Priority:3
+Description:Do you like ananas?
+Long description:Ananas is so cool i dont even know how to describe them.
+But you, do you like it? Can you feel how sweet it is? How delicious?
+Answer before ananas comes for you!
+</>
+
+<t_multiselect>
+Type:multiselect
+Choices:ananas/ banan/ kiwi/ nothing
+Defaul:ananas/ banan
+Priority:1
+Description:What do you like?
+Long description:We need to know, which fruit do you like.
+</>
+
+<t_note>
+Type:note
+Description:This is a test note.
+Long description:This is long description of the test note,
+this note is trying to test functionality.
+</>
+
+<t_text>
+Type:text
+Description:This is a test text.
+Long description:This test text if for testing a functionality.
+</>
+
+<t_password>
+Type:password
+Default:1111
+Priority:3
+Description:We are testing passwords.
+Long description:This is a test password.
+</>
+
+<t_string>
+Type:string
+Default:This is real life.
+Priority:1
+Description:Is this real?
+Long description:Write your opinion about life.
+</>
+

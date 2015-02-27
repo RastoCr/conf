@@ -4,7 +4,9 @@
 # tento subor poskytuje celu funkcionalitu,
 # vsetko co sa da spravit, sa da spravit odtialto
 
+
 from communication import communicator
+import 			  sys
 from front_end     import get_front_end
 
 def conf_start():
@@ -17,10 +19,11 @@ class conf_module:
 	def make_front_end(self, file_path):
 		end = get_front_end()
 		# cesta k suboru z otazkami
+		# relativna cesta z priecinku odkial sa skript spusta
 		self.comm = communicator(end, file_path)
 		try:
 			self.comm.load("save.p")
-		except:
+		except IOError:
 			pass		
 
 	def ask_question(self, ID):

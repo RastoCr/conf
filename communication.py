@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # encoding=utf-8
 
-# Tento subor ma na starosti komunikaciu s front sendom
+# Tento subor ma na starosti komunikaciu s frontendom
 
 from formating import get_from_file
 import pickle
-
-
-DIVIDER = ':'
 
 class communicator():
 	def __init__(self, end, file_path):
@@ -15,7 +12,7 @@ class communicator():
 		self.buffer = []
 		#front_end
 		self.end = end
-		# otazky vo forme ID:otazky
+		# vsetky vzory vo forme ID:vzor
 		self.questions = get_from_file(file_path)
 		# odpovede vo forme ID:odpoved
 		self.answers   = {}
